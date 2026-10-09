@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>RedCard Admin</title>
+</head>
+<body>
+    <h1>Blocked sites</h1>
+
+    <p th:if="${param.error != null}" style="color: red;">
+        Invalid input: the host must not be empty and the unlock seconds must be greater than 60.
+    </p>
+
+    <form method="post" action="/admin/add">
+        <label>Host <input type="text" name="host" placeholder="reddit.com" required></label>
+        <label>Unlock seconds <input type="number" name="unlockSeconds" min="60" value="600" required></label>
+        <button type="submit">Add</button>
+    </form>
+
+    <table border="1" cellpadding="6">
+        <thead>
+            <tr><th>Host</th><th>Unlock seconds</th><th>Action</th></tr>
+        </thead>
+        <tbody>
+            <tr th:each="site : ${sites}">
+                <td th:text="${site.host()}">example.com</td>
+                <td th:text="${site.unlockSeconds()}">600</td>
+                <td>
+                    <form method="post" action="/admin/remove">
+                        <input type="hidden" name="host" th:value="${site.host()}">
+                        <button type="submit">Remove</button>
+                    </form>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>
