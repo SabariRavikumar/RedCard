@@ -4,6 +4,8 @@ import java.util.Set;
 
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
@@ -44,7 +46,12 @@ public class ProxyFilter implements WebFilter {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
+        HttpMethod method = exchange.getRequest().getMethod();
         String host = exchange.getRequest().getURI().getHost();
+        if (method.matches("CONNECT")) {
+            exchange.getResponse().setStatusCode(HttpStatus.NOT_IMPLEMENTED);
+            return exchange.getResponse().setComplete();
+        }
         if (host.equalsIgnoreCase("localhost")) {
             return chain.filter(exchange);
         }
@@ -59,7 +66,7 @@ public class ProxyFilter implements WebFilter {
         Mono<DataBuffer> errorBody = Mono
                 .just(exchange.getResponse().bufferFactory().wrap("Blocked by RedCard".getBytes()));
         System.out.println("Blocked request to " + host);
-        exchange.getResponse().getHeaders().add("Content-Type", "text/plain");
+        exchange.getResponse().getHeaders().setContentType(MediaType.TEXT_PLAIN);
         exchange.getResponse().setStatusCode(org.springframework.http.HttpStatus.FORBIDDEN);
         return exchange.getResponse().writeWith(errorBody);
     }
@@ -72,7 +79,6 @@ public class ProxyFilter implements WebFilter {
                 .headers(outgoingHeaders -> {
                     request.getHeaders().forEach((headerName, headerValues) -> {
                         if (!HOP_BY_HOP_HEADERS.contains(headerName.toLowerCase())) {
-                            System.out.println("Adding header " + headerName + " with values " + headerValues);
                             outgoingHeaders.addAll(headerName, headerValues);
                         }
                     });
