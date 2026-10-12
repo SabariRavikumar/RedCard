@@ -35,3 +35,6 @@ build/
 ### Claude Code / tooling ###
 .claude/
 .remember/
+
+### task md ignore
+TASK.md

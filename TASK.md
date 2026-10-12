@@ -11,12 +11,17 @@ RedCard: local forward proxy and traffic analyzer (Spring Boot, WebFlux, Redis).
 - [x] `BlocklistService`: `isBlocked`, `addSite`, `removeSite`, `listAllBlockedSites`
 - [x] REST API: `POST /api/blocked`, `DELETE /api/blocked/{host}`, `GET /api/blocked`
 - [x] Admin page `/admin`: list, add, remove sites (Post/Redirect/Get, input error message)
+- [x] `BlocklistService.unlockSite(host)`, `POST /admin/unlock`
+- [x] `PuzzleService.createPuzzle` / `verify` (answer in Redis, one attempt via GETDEL)
+- [x] `CONNECT` answered with 501, header-value debug logging removed
+- [x] README.md
 
 ## To do
-- [ ] `BlocklistService.unlock(host)`: read seconds from the hash, set `unlocked:<host>` with that TTL
-- [ ] Puzzle page for blocked requests, and the endpoint that checks the answer and unlocks
+- [ ] Puzzle page (`GET /puzzle?host=&url=`), `POST /puzzle/solve` (verify, unlock, redirect), and ProxyFilter redirecting blocked requests to the page
+- [ ] Replace the temporary `/puzzle/verify` endpoint
+- [ ] Common base type for puzzles (QAAbstract idea)
+- [ ] Authentication for admin page and API; bind to 127.0.0.1
 - [ ] Tighten the local-request rule in `ProxyFilter` (host and port, not just `localhost`)
-- [ ] Remove debug `System.out.println` calls from `ProxyFilter`
 - [ ] Move the `"unlocked:"` prefix into one constant
 - [ ] DELETE endpoint should distinguish "not found" (404) from success
 - [ ] `@Scheduled` daily reset and analytics logging
