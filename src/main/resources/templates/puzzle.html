@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>RedCard: solve to unlock</title>
+</head>
+<body>
+    <h1>Blocked by RedCard</h1>
+    <p>Solve this to unlock <strong th:text="${host}">example.com</strong>:</p>
+
+    <p><strong th:text="${puzzle.question()}">12 + 30</strong> = ?</p>
+
+    <form method="post" action="/puzzle/solve">
+        <input type="hidden" name="id"   th:value="${puzzle.id()}">
+        <input type="hidden" name="host" th:value="${host}">
+        <input type="hidden" name="url"  th:value="${url}">
+        <input type="text" name="answer" inputmode="numeric" autocomplete="off" autofocus required>
+        <button type="submit">Unlock</button>
+    </form>
+</body>
+</html>

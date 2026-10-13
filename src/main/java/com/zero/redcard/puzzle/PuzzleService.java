@@ -13,15 +13,13 @@ import reactor.core.publisher.Mono;
 
 @Service 
 public class PuzzleService {
-    private final AdminController adminController;
 
     private final ReactiveStringRedisTemplate redisTemplate;
 
     private static final String PUZZLE_KEY = "puzzle:";
 
-    public PuzzleService(ReactiveStringRedisTemplate redisTemplate, AdminController adminController) {
+    public PuzzleService(ReactiveStringRedisTemplate redisTemplate) {
         this.redisTemplate = redisTemplate;
-        this.adminController = adminController;
     }
 
     public Mono<Puzzle> createPuzzle() {
